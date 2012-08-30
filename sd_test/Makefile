@@ -9,5 +9,5 @@ OBJECTS = \
 
 # reserve space for heap in RAM
 LDFLAGS = -Wl,--defsym,_min_heap_size=0x400
-
+OPTIMIZE=-Os
 include ../default.mk
