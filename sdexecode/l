@@ -1,0 +1,4 @@
+#!/bin/bash
+
+xc32-ld -T xmem.ld -o blink.elf blink.o /opt/microchip/xc32/v1.10/pic32mx/lib/proc/32MX220F032D/processor.o
+xc32-objcopy -O binary blink.elf blink.bin
