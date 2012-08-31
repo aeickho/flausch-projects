@@ -66,3 +66,4 @@ write: $(MAIN).hex
 clean:
 	- rm $(OBJECTS) $(APPLIB_OBJECTS) $(APPLIB)
 	- rm -f $(MAIN).elf $(MAIN).hex $(MAIN).map
+	cd $(FLAUSCHLIB_PATH) && make clean
