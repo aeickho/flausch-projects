@@ -194,6 +194,14 @@ main (void)
       _nop ();
       _nop ();
       _nop ();
+      mLED_1_Off ();
+      delay100usec (10000);
+      mLED_1_On ();
+      delay100usec (10000);
+      mLED_1_Off ();
+      delay100usec (10000);
+                                
+                                
       _nop ();
       _nop ();
       _nop ();
