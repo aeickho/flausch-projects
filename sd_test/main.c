@@ -134,6 +134,8 @@ main (void)
   while (1)
     {
       unsigned int i;
+      int buf;
+
       // void (* buff)(void)  = 0xA0001000;
       uart_puts ("Run ");
       uart_puthex (counter++);
@@ -145,8 +147,15 @@ main (void)
       mLED_1_Toggle ();
       unsigned int stat = disk_initialize ();
 
+      uart_puts ("disk_initialize: ");
       uart_puthex (stat);
       uart_puts ("\r\n");
+
+      disk_ioctl (0, GET_SECTOR_COUNT, &buf);
+      uart_puts ("GET_SECTOR_COUNT: ");
+      uart_puthex (buf);
+      uart_puts ("\r\n");
+
 
 
       BMXDKPBA = 0x1000;
@@ -161,18 +170,27 @@ main (void)
       uart_puts ("xxxxxxxx");
       uart_puts ("\r\n");
 
+      ret = disk_write (0,	/* Physical drive nmuber (0) */
+			buff,	/* Pointer to the data buffer to stor */
+                        80000,  /* Start sector number (LBA) */
+			1	/* Sector count (1..255) */
+	);
+      uart_puthex (ret);
+      uart_puts ("xxxxxxxx");
+      uart_puts ("\r\n");
+
 
       for (i = 0; i < 10; i++)
 	{
 	  uart_puthex (buff[i]);
-	  uart_puts ( " ");
+	  uart_puts (" ");
 	  delay100usec (300);
 	}
 
- uart_puts ("yyyyy");
-       uart_puts ("\r\n");
-       
-       
+      uart_puts ("yyyyy");
+      uart_puts ("\r\n");
+
+
 
       delay100usec (10000);
 
@@ -200,8 +218,8 @@ main (void)
       delay100usec (10000);
       mLED_1_Off ();
       delay100usec (10000);
-                                
-                                
+
+
       _nop ();
       _nop ();
       _nop ();
