@@ -1,4 +1,6 @@
 #!/bin/bash
 
+xc32-gcc -g -Os  -mprocessor=32MX220F032D -I. -I../flauschlib "-I/home/alex/devel/pinguino/applibs/Microchip/Include" -c "blink.c" -o "blink.o"
+xc32-gcc -Wl,--defsym,_min_heap_size=0x400 -g -Os  -mprocessor=32MX220F032D -Wl,--report-mem blink.o  ../flauschlib/libflausch.a -Wl,-Map,blink.map -o blink.elf
 xc32-ld -T xmem.ld -o blink.elf blink.o /opt/microchip/xc32/v1.10/pic32mx/lib/proc/32MX220F032D/processor.o
-xc32-objcopy -O binary blink.elf blink.bin
+xc32-objcopy -O binary -j .text blink.elf blink.bin
