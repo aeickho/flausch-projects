@@ -113,14 +113,16 @@ main (void)
 {
   PF_BYTE *buff = 0xA0001000;
   mInitAllLEDs ();
-
-  /* set up timer 2 for life indicator */
+      int buf;
+int i;
+/*
+  // set up timer 2 for life indicator 
   PR2 = 20000;
   T2CON = 0x8030;		// enable, prescaler=1/8
   IPC2bits.T2IP = 1;
-  INTEnableSystemMultiVectoredInt ();
   IEC0bits.T2IE = 1;
-
+*/
+  INTEnableSystemMultiVectoredInt ();
 
 
   systick_init ();
@@ -130,11 +132,42 @@ main (void)
   spi_sd_init ();
 
   int counter = 0;
-//while(1) { mLED_1_Toggle(); }
+  unsigned int stat = disk_initialize ();
+
+  uart_puts ("disk_initialize: ");
+  uart_puthex (stat);
+  uart_puts ("\r\n");
+  disk_ioctl (0, GET_SECTOR_COUNT, &buf);
+  uart_puts ("GET_SECTOR_COUNT: ");
+  uart_puthex (buf);
+  uart_puts ("\r\n");
+
+//while (1)
+//    {
+//     mLED_1_On ();
+//     mLED_1_Off ();
+//     }
+
+while (1)
+  {
+//  mLED_1_On ();
+
+   unsigned int ret = disk_read (0,	/* Physical drive nmuber (0) */
+                                buff,	/* Pointer to the data buffer to store read data */
+                                70000,	/* Start sector number (LBA) */
+                                1	/* Sector count (1..255) */
+                                
+    );
+//   mLED_1_Off ();
+
+     uart_puthex (buff[100]);
+     //uart_puts ("x\r\n");
+     
+}
+
   while (1)
     {
       unsigned int i;
-      int buf;
 
       // void (* buff)(void)  = 0xA0001000;
       uart_puts ("Run ");
@@ -145,16 +178,7 @@ main (void)
 
 
       mLED_1_Toggle ();
-      unsigned int stat = disk_initialize ();
 
-      uart_puts ("disk_initialize: ");
-      uart_puthex (stat);
-      uart_puts ("\r\n");
-
-      disk_ioctl (0, GET_SECTOR_COUNT, &buf);
-      uart_puts ("GET_SECTOR_COUNT: ");
-      uart_puthex (buf);
-      uart_puts ("\r\n");
 
 
 
@@ -170,14 +194,11 @@ main (void)
       uart_puts ("xxxxxxxx");
       uart_puts ("\r\n");
 
-      ret = disk_write (0,	/* Physical drive nmuber (0) */
-			buff,	/* Pointer to the data buffer to stor */
-                        80000,  /* Start sector number (LBA) */
-			1	/* Sector count (1..255) */
-	);
-      uart_puthex (ret);
-      uart_puts ("xxxxxxxx");
-      uart_puts ("\r\n");
+//      ret = disk_write (0,	/* Physical drive nmuber (0) */
+//			buff,	/* Pointer to the data buffer to stor */
+//                        80000,  /* Start sector number (LBA) */
+//			1	/* Sector count (1..255) */
+//	);
 
 
       for (i = 0; i < 10; i++)

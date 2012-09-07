@@ -16,7 +16,7 @@
 PROC    = 32MX220F032D
 
 # tool configuration
-FLASH   = sudo ubw32 -n -r
+FLASH   = ubw32 -n -r
 CC      = xc32-gcc
 BIN2HEX = xc32-bin2hex
 AR      = xc32-ar
@@ -63,6 +63,8 @@ $(APPLIB): $(APPLIB_OBJECTS)
 write: $(MAIN).hex
 	$(FLASH) -w $(MAIN).hex
 
+ctags:
+	$(CC) $(CFLAGS) -c "$(MAIN).c" -M | sed -e 's/[\\ ]/\n/g' | sed -e '/^$$/d' -e '/\.o:[ \t]*$$/d'  | ctags -L - --c++-kinds=+p --fields=+iaS --extra=+q
 clean:
 	- rm $(OBJECTS) $(APPLIB_OBJECTS) $(APPLIB)
 	- rm -f $(MAIN).elf $(MAIN).hex $(MAIN).map
